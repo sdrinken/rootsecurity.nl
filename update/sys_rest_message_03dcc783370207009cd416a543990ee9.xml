@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_rest_message">
+    <sys_rest_message action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <authentication_type>no_authentication</authentication_type>
+        <basic_auth_password/>
+        <basic_auth_profile/>
+        <basic_auth_user/>
+        <description>ThreatGrid DNS Feed Download</description>
+        <name>ThreatGrid</name>
+        <oauth2_profile/>
+        <protocol_name/>
+        <rest_endpoint>https://panacea.threatgrid.com/api/v3/feeds/${feedname}?api_key=${apikey}</rest_endpoint>
+        <sys_class_name>sys_rest_message</sys_class_name>
+        <sys_created_by>seb.drinkenburg</sys_created_by>
+        <sys_created_on>2017-10-31 10:57:37</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>03dcc783370207009cd416a543990ee9</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>ThreatGrid</sys_name>
+        <sys_package display_value="ThreatGrid_Feed_Integration" source="x_snc_threatgrid_f">3dd5cf4f37cec3009cd416a543990e22</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="ThreatGrid_Feed_Integration">3dd5cf4f37cec3009cd416a543990e22</sys_scope>
+        <sys_update_name>sys_rest_message_03dcc783370207009cd416a543990ee9</sys_update_name>
+        <sys_updated_by>seb.drinkenburg</sys_updated_by>
+        <sys_updated_on>2017-10-31 10:57:37</sys_updated_on>
+        <use_basic_auth>false</use_basic_auth>
+        <use_mutual_auth>false</use_mutual_auth>
+    </sys_rest_message>
+</record_update>
