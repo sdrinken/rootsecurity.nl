@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_fix">
+    <sys_script_fix action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <before>false</before>
+        <description>ThreathGrid Feed integration example</description>
+        <flush_cache>false</flush_cache>
+        <name>ThreathGrid Feed integration</name>
+        <run_once>true</run_once>
+        <script><![CDATA[//JSON String Representation of Clothing items
+//var responseBody = '[{"description":"DNS response information from requests made by samples downloading PE executables.","ips":["172.104.65.137"],"sample_md5":"8280a25504c7f04d9c3f6252cfabd17b","sample":"https://panacea.threatgrid.com/feeds/downloaded-pe-dns/samples/c59e890614ccae0c090d0b23ae962776","sample_sha256":"e5429d13c6ac0567b4ee104fa47cac9dada94b86c05432515f9c5dfe9c8c2241","info":"https://panacea.threatgrid.com/feeds/downloaded-pe-dns/domains/quanta.tk","domain":"quanta.tk","sample_sha1":"0ad823530c230d0312d8d44fb0d3c59546c6e07f","timestamp":"2017-10-29T17:29:18Z"}]';
+
+//Define RESTMessageV2 to get data in
+
+var r = new sn_ws.RESTMessageV2('ThreatGrid', 'Default GET');
+var response = r.execute();
+var responseBody = response.getBody();
+var httpStatus = response.getStatusCode();
+
+//Define JSON Arrays
+var descriptionArray = [];
+//var ipsArray = [];
+var domainArray = [];
+//var sampleArray = [];
+
+//Check if inidicator Threatgrid-Feed exists if not create it
+
+var gr = new GlideRecord('sn_ti_indicator');
+	gr.query("title","ThreatGrid-Feed");
+	if (gr.next()) {
+    gs.info("we got one");
+	var ind_sys_id = (gr.sys_id);
+	gs.info(ind_sys_id);
+    } else {
+		
+		gs.info("we dont");
+		gr.initialize();
+		gr.title = "ThreatGrid-Feed";
+		gr.notes = "ThreadGrid Feed information comming from https://panacea.threatgrid.com/";
+		gr.insert();
+		var ind_sys_id = (gr.sys_id);
+		gs.info(ind_sys_id);
+	}
+
+//JSONParser Script to parse responseBody
+var parser = new JSONParser();
+var parsed = parser.parse(responseBody);
+var length = parsed.length;
+	gs.print(length);
+
+//Define Loop and get data from the responseBody
+for(var i=0;i<length;i++){
+	
+//Print parsed data	
+	gs.info(parsed[i].description);
+//	gs.info(parsed[i].ips);
+	gs.info(parsed[i].domain);
+//	gs.info(parsed[i].sample);
+	
+//Place parced data into string variable	
+//	var ip = parsed[i].ips.toString();
+    var des = parsed[i].description.toString();
+	var dom = parsed[i].domain.toString();
+//	var sam = parsed[i].sample.toString();
+	
+//Push data into Array	
+	descriptionArray.push(parsed[i].description.toString());
+//	ipsArray.push(parsed[i].ips.toString());
+	domainArray.push(parsed[i].domain.toString());
+//	sampleArray.push(parsed[i].sample.toString());
+
+//Create new domain observable	
+	
+var gr3 = new GlideRecord('sn_ti_observable');
+gr3.initialize();
+gr3.value = dom;  // Domain
+gr3.type = '555d47809f81120035c6786f957fcf72'; // Domain Name
+gr3.finding = 'Unknown';
+gr3.notes = "ThreatGrid Feed found: " +des;
+gr3.insert();
+gs.sleep(5);
+var obs_sys_id = gr3.sys_id;	
+}
+
+var gr4 = new GlideRecord('sn_ti_observable');
+	gr4.query("note","ThreatGrid Feed found: " +des);
+	if (gr.next()) {
+    gs.info("we got one");
+	gs.info(gr4.notes.length);
+	gs.info(ind_sys_id);
+	
+} 
+	
+// Obtain sys_id's of stored observales that contain Threatgrid feed notes	
+var gr = new GlideRecord('sn_ti_observable');
+	gr.query("notes","ThreatGrid Feed found: DNS response information from requests made by samples downloading PE executables.");
+		while (gr.next()) {
+		gs.info("we got one");
+		var obs_sys_id = (gr.sys_id);
+		gs.info(obs_sys_id);
+	
+			// Create m2m record to tie Indicator/Observable
+		var gr4 = new GlideRecord('sn_ti_m2m_observable_indicator');
+		gr4.initialize();
+		gr4.indicator = ind_sys_id;
+		gr4.observable = obs_sys_id;
+		gr4.insert();
+    }
+ 
+gs.print('description array is:'+descriptionArray);
+gs.print('domain is:'+domainArray);
+
+
+
+//Print different parts of the response
+//gs.log("description: " + parsed[0].description.toString());
+//gs.log("ips: " + parsed[0].ips.toString());
+//var ip = parsed[0].ips.toString();
+//var des = parsed[0].description.toString();
+//gs.log("domain: " + parsed[0].domain);
+
+//Print out the entire Javascript Object
+JSUtil.logObject(parsed);]]></script>
+        <sys_class_name>sys_script_fix</sys_class_name>
+        <sys_created_by>seb.drinkenburg</sys_created_by>
+        <sys_created_on>2017-10-31 10:28:01</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>6146078f37cec3009cd416a543990e11</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>ThreathGrid Feed integration</sys_name>
+        <sys_package display_value="ThreatGrid_Feed_Integration" source="x_snc_threatgrid_f">3dd5cf4f37cec3009cd416a543990e22</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="ThreatGrid_Feed_Integration">3dd5cf4f37cec3009cd416a543990e22</sys_scope>
+        <sys_update_name>sys_script_fix_6146078f37cec3009cd416a543990e11</sys_update_name>
+        <sys_updated_by>seb.drinkenburg</sys_updated_by>
+        <sys_updated_on>2017-10-31 10:28:12</sys_updated_on>
+        <unloadable>false</unloadable>
+    </sys_script_fix>
+</record_update>
